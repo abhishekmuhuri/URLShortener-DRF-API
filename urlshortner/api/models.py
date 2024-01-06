@@ -21,7 +21,7 @@ class User(models.Model):
         return f"Name: {self.username} , Email : {self.email}"
     
 class URL(models.Model):
-    alias = models.CharField(primary_key=True,unique=True,null=False, max_length=255, blank=False)
+    alias = models.CharField(primary_key=True,unique=True,null=False, max_length=255, blank=False, db_index=True)
     long = models.URLField(null=False,blank=False)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     expires_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -35,4 +35,8 @@ class URL(models.Model):
     def save(self,*args,**kwargs):
         self.clean_alias()
         super().save(*args, **kwargs)
+        
+    def __str__(self):
+        return f"Alias: {self.alias}, Long: {self.long}, User: {self.user}"
+
         
