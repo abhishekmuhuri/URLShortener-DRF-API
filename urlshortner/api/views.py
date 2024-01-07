@@ -1,24 +1,21 @@
-from rest_framework import generics
 from .models import User, URL
 from .serializers import UserSerializer, URLSerializer
 from rest_framework import generics, permissions
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.authtoken.models import Token
-from django.contrib.auth import authenticate
 from rest_framework.views import APIView
+
 
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+
 class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    
+
+
 class urlAPI(APIView):
     def post(self, request):
         print(request.data)
@@ -31,7 +28,7 @@ class urlAPI(APIView):
         else:
             # Invalid data, return error response
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
     def get(self, request, pk):
         try:
             url_object = URL.objects.get(alias=pk)
