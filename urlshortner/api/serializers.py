@@ -13,3 +13,17 @@ class URLSerializer(serializers.ModelSerializer):
     class Meta:
         model = URL
         fields = ['alias', 'long', 'created_at', 'expires_at', 'last_visited', 'user']
+     
+        
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username','first_name','last_name','email']
+        
+    def save(self,**kwargs):
+        user = super().save(**kwargs)
+        user.is_staff = False
+        user.is_superuser = False
+        return user
+        
+            
