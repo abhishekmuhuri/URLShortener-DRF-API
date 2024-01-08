@@ -1,6 +1,6 @@
 from .models import User, URL
 from .serializers import UserSerializer, URLSerializer
-from rest_framework import generics, permissions
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -18,7 +18,6 @@ class UserDetail(generics.RetrieveAPIView):
 
 class urlAPI(APIView):
     def post(self, request):
-        print(request.data)
         serializer = URLSerializer(data=request.data)
         if serializer.is_valid():
             # Valid data, create and save the URL object
