@@ -13,6 +13,11 @@ class URLSerializer(serializers.ModelSerializer):
     class Meta:
         model = URL
         fields = ['alias', 'long', 'created_at', 'expires_at', 'last_visited', 'user']
+        
+class URLPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = URL
+        fields = ['alias','long','user']
      
         
 class UserRegistrationSerializer(serializers.ModelSerializer):

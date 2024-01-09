@@ -4,21 +4,39 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import BasicAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-
 class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+class ShortURLList(generics.ListAPIView):
+    authentication_classes = [BasicAuthentication, JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    serializer_class = URLSerializer
+
+    def get_queryset(self):
+        return URL.objects.filter(user=self.request.user.id)
+
 
 class urlAPI(APIView):
+    authentication_classes = [BasicAuthentication, JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
     def post(self, request):
-        serializer = URLSerializer(data=request.data)
+        data = {
+            'alias': request.data.get('alias'),
+            'long': request.data.get('long'),
+            'user': request.user.id
+        }
+        serializer = URLSerializer(data=data)
         if serializer.is_valid():
             # Valid data, create and save the URL object
             url_object = serializer.save()
@@ -28,13 +46,13 @@ class urlAPI(APIView):
             # Invalid data, return error response
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, pk):
+    def get(self, request, pk):
         try:
-            url_object = URL.objects.get(alias=pk)
+            url_object = URL.objects.get(alias=pk,user=request.user.id)
             serializer = URLSerializer(url_object)
             return Response(serializer.data)
-        except URL.DoesNotExist:
-            return Response({'error': 'URL not found'}, status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response({'error':'alias not found'},status=status.HTTP_404_NOT_FOUND)
 
 class UserAPI(APIView):
     def post(self, request):
