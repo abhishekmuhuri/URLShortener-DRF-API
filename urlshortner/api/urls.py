@@ -12,8 +12,8 @@ urlpatterns = [
     ## List
     path('ShortURLList',views.ShortURLList.as_view()),
     ## User Endpoints
-    path('users/', views.UserList.as_view()),
-    path('users/<int:pk>/', views.UserDetail.as_view()),
+    path('users', views.UserList.as_view()),
+    path('users/<int:pk>', views.UserDetail.as_view()),
     ## Token
     path('token', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh', TokenRefreshView.as_view(), name='token_refresh'),

@@ -21,5 +21,5 @@ from api.views import URLRedirection
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-    path('<str:pk>/', URLRedirection.as_view(), name='url_redirection'),
+    path('<str:pk>', URLRedirection.as_view(), name='url_redirection'),
 ]
