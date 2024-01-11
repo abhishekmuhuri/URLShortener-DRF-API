@@ -5,10 +5,14 @@ from datetime import datetime, timedelta
 
 
 class User(AbstractUser):
+    email = models.EmailField(unique=True)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+
     REQUIRED_FIELDS = ['first_name', 'last_name', 'email']
 
-    def __str__(self) -> str:
-        return f"Name: {self.username} , Email : {self.email}"
+    def __str__(self):
+        return f"Username: {self.username}, Email: {self.email}"
 
 
 class URL(models.Model):
