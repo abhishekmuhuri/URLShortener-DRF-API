@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}         
+
+{% if messages %}
+  <div class="alert alert-danger">
+    <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+{% if register_form.errors %}
+  <div class="alert alert-danger">
+    <ul>
+      {% for field, errors in register_form.errors.items %}
+        {% for error in errors %}
+          <li>{{ field }}: {{ error }}</li>
+        {% endfor %}
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+<!--Register--> 
+<div class="container py-5">
+	<h1>Register</h1>
+	<form method="POST">
+		{% csrf_token %}
+		{{ register_form.as_p }}          
+		<button class="btn btn-primary" type="submit">Register</button>
+	</form>
+	<p class="text-center">If you already have an account, <a href="/user/login">login</a> instead.</p>
+</div>
+
+{% endblock %}
