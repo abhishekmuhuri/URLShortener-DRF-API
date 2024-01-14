@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import  render, redirect
 from .forms import NewUserForm
 from django.contrib.auth import login,authenticate,logout
@@ -5,13 +6,13 @@ from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import redirect
 from rest_framework.decorators import api_view
+from django.contrib.auth.decorators import login_required
 
 
-@api_view(['POST', 'GET'])
 def register_request(request):
     # Check if the user is already authenticated, redirect if true
     if request.user.is_authenticated:
-        return redirect("webapp:homepage")
+        return JsonResponse({'message':'User is already authenticated','user':request.user.username})
 
     # Process registration form when the request method is "POST"
     if request.method == "POST":
@@ -33,10 +34,11 @@ def register_request(request):
         template_name="register.html",
         context={"register_form": form, "form_errors": form.errors}
     )
-    
+
+
 def login_request(request):
     if request.user.is_authenticated:
-        return redirect("webapp:homepage")
+        return JsonResponse({'message': 'User already logged in','user':request.user.username})
 
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
@@ -48,7 +50,7 @@ def login_request(request):
                 login(request, user)
                 print(f'LOGGED IN as {username}')
                 messages.info(request, f"You are now logged in as {username}.")
-                return redirect("webapp:homepage")
+                return JsonResponse({'success': True,'user':request.user.username})
             else:
                 messages.error(request, "Invalid username or password.")
         else:
@@ -58,8 +60,16 @@ def login_request(request):
 
     return render(request=request, template_name="login.html", context={"login_form": form})
 
-
+@login_required(login_url='/user/login')
 def logout_request(request):
-	logout(request)
-	messages.info(request, "You have successfully logged out.")
-	return redirect("webapp:homepage")
+    username = request.user.username
+    logout(request)
+    messages.info(request, "You have successfully logged out.")
+    return JsonResponse({'success':'User logged out.','user':username})
+
+def test(request):
+    if request.user.is_authenticated:
+        return JsonResponse({'message':f'{request.user.username} is authenticated'})
+    else:
+        return JsonResponse({'message':'User not authenticated'})
+        
