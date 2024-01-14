@@ -7,6 +7,7 @@ from django.shortcuts import redirect
 from rest_framework.decorators import api_view
 
 
+@api_view(['POST', 'GET'])
 def register_request(request):
     # Check if the user is already authenticated, redirect if true
     if request.user.is_authenticated:
